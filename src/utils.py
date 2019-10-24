@@ -1,11 +1,16 @@
 import os
 from glob import glob
 import numpy as np
-#from tbox.utils import pkload
 from parse import parse
 import argparse
 from hq.src.target_utils import to_onehot
 import pickle
+import subprocess
+
+
+def githash():
+    """Get the current git commit short hash."""
+    return subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).strip().decode("utf-8")
 
 
 def pkload(fname="a.out"):
@@ -48,21 +53,37 @@ def gather_data(type, feat_mode, folder_):
     return X, Y, gids
 
 
+
+def data_read_parse(fname, dim_zero_padding=False):
+    xtrain_ = pickle.load(open(fname, "rb"))
+
+    if (isinstance(xtrain_, tuple) or isinstance(xtrain_, list)) and len(xtrain_) == 1:
+        xtrain_ = xtrain_[0]
+
+    if isinstance(xtrain_[0], list):
+        xtrain_ = [np.array(x).T for x in xtrain_]
+
+    if isinstance(xtrain_, np.ndarray) and isinstance(xtrain_[0], np.ndarray):
+        xtrain_ = xtrain_.tolist()
+
+    if dim_zero_padding and xtrain_[0].shape[1] % 2 != 0:
+        xtrain_ = [np.concatenate([x, np.zeros((x.shape[0], 1))], axis=1) for x in xtrain_]
+
+    return xtrain_
+
+
 def fetch_class_files(pattern):
     get_sort_key = lambda x: parse("{}_class{:d}.pkl", x)[1]
     return sorted(glob(pattern), key=get_sort_key)
 
 
 def gather_data_gen(type, feat_mode, folder_):
-    inclassfiles = fetch_class_files(os.path.join(folder_, "{}.feat{}_class*.pkl".format(type, feat_mode)))
-    gidsclassfiles = fetch_class_files(os.path.join(folder_, "{}.feat{}.gids_class*.pkl".format(type, feat_mode)))
+    inclassfiles = fetch_class_files(os.path.join(folder_, "{}.feat{}_class*.pkl".format(type, feat_mode)))[:2]
 
     class_ = list(map(getclass, inclassfiles))
-    x_list = list(map(lambda x: np.array(pkload(x)[0]).swapaxes(1,2), inclassfiles))
-    gids_list = list(map(lambda x: np.array(pkload(x)[0]), gidsclassfiles))
-    y_list = [[class_[i] for _ in range(x_list[i].shape[0])] for i, fname in enumerate(inclassfiles)]
-    gids = gids_list
-    return x_list, y_list, gids
+    x_list = list(map(lambda x: data_read_parse(x), inclassfiles))
+    y_list = [[class_[i] for _ in range(len(x_list[i]))] for i, fname in enumerate(inclassfiles)]
+    return x_list, y_list
 
 
 def run_parser(desc=""):
