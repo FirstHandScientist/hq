@@ -1,0 +1,11 @@
+{
+    "Train":
+    {
+	"niter": 2
+    },
+    "GMM":
+    {
+        "n_states": 3,
+        "n_prob_components": 2
+    }
+}
