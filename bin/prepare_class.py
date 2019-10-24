@@ -4,9 +4,10 @@ import pickle as pkl
 import os
 from functools import partial
 from parse import parse
-import json
-from gm_hmm.src.utils import read_classmap,write_classmap,flip,\
-    phn61_to_phn39, remove_label, to_phoneme_level,getsubset,normalize
+from hq.src.feat_utils import read_classmap, write_classmap, flip,\
+    phn61_to_phn39, remove_label, to_phoneme_level, getsubset, normalize
+
+import argparse
 
 
 def get_phoneme_mapping(iphn, phn2int, n_taken=0):
@@ -24,7 +25,6 @@ def test_get_phoneme_mapping():
     assert(get_phoneme_mapping(iphn, phn2int) == {0:"c", 1:"b"})
     iphn = np.array([2, 1])
     assert(get_phoneme_mapping(iphn, phn2int) == {0:"b", 1:"c"})
-
 
 
 def prepare_data(fname_dtest=None, classmap_existing=None, fname_dtrain=None, n_phn=None,totclasses=None, verbose=False):
@@ -74,7 +74,6 @@ def prepare_data(fname_dtest=None, classmap_existing=None, fname_dtrain=None, n_
 
 parser = argparse.ArgumentParser(description="Split the raw data into class data.")
 
-
 parser.add_argument('-opt', metavar='Input data file', type=str,
                     help='Input .pkl file to split into classes.',
                     default="")
@@ -98,17 +97,15 @@ if __name__ == "__main__":
                                  "{}".format(data_folder),
                                  "{}.feat{}.pkl".format(datatype, feat_mode))
 
-
-
     "Example: python bin/prepare_data.py 2/61 data/train13.pkl data/test13.pkl"
 
-    totclasses, n_db = parse("{:d}c_{:d}dB", splitname) 
+    totclasses, featnum, noisetype = parse("_c{:d}f{:d}{}", splitname)
     nclasses = totclasses
     train_inputfile = infile
     test_inputfile = infile.replace("train", "test")
     
-    train_outfiles = [train_inputfile.replace(".pkl", "_" + str(i+1) + ".pkl") for i in range(nclasses)]
-    test_outfiles = [test_inputfile.replace(".pkl", "_" + str(i+1) + ".pkl") for i in range(nclasses)]
+    train_outfiles = [train_inputfile.replace(".pkl", "_class" + str(i+1) + ".pkl") for i in range(nclasses)]
+    test_outfiles = [test_inputfile.replace(".pkl", "_class" + str(i+1) + ".pkl") for i in range(nclasses)]
     data_folder = os.path.dirname(test_inputfile)
 
     classmap = read_classmap(data_folder)
@@ -128,27 +125,27 @@ if __name__ == "__main__":
         assert(all([os.path.isfile(x) for x in train_outfiles + test_outfiles]))
         sys.exit(0)
 
-
-    # Number of classes left to fetch
+    #   Number of classes left to fetch
     nclasses_fetch = nclasses - n_existing
     print("(info)", nclasses_fetch, "classes to fetch.")
 
-    # Now {x,y}{train,test} only contain newly picked phonemes (not present in classmap)
+    #   Now {x,y}{train,test} only contain newly picked phonemes (not present in classmap)
     xtrain, ytrain, xtest, ytest, class2phn, class2int = prepare_data(fname_dtest=test_inputfile, fname_dtrain=train_inputfile,\
                                                 n_phn=nclasses_fetch,
                                                 classmap_existing=classmap,
                                                 totclasses=totclasses,
                                                 verbose=False)
-    # normalization 
+
+    #  Normalization
     xtrain, xtest = normalize(xtrain, xtest)
 
     classmap = {**classmap, **class2phn}
 
-    # Assert length (If we add an already existing phoneme,
-    # the dictionary size will not be len(classmap) + len(class2phn)
-    assert (len(classmap) == nclasses)
+    #  Assert length (If we add an already existing phoneme,
+    #   the dictionary size will not be len(classmap) + len(class2phn)
+    assert(len(classmap) == nclasses)
 
-    # Create only the classes that are left
+    #  Create only the classes that are left
     for i, ic in class2int.items():
         assert(not os.path.isfile(train_outfiles[i]))
         assert(not os.path.isfile(test_outfiles[i]))
@@ -158,7 +155,6 @@ if __name__ == "__main__":
         pkl.dump(xtrain_c, open(train_outfiles[i], "wb"))
         pkl.dump(xtest_c, open(test_outfiles[i], "wb"))
 
-    # Write the mapping class number <=> phoneme
+    #   Write the mapping class number <=> phoneme
     write_classmap(classmap, os.path.dirname(test_inputfile))
-
     sys.exit(0)

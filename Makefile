@@ -116,7 +116,7 @@ clean-%-flags:
 	rm -f $(flags)/*.$*
 
 clean-data:
-	rm -f $(EXP)/**/$(DATA)/{train,test}.feat*{_class*,}.pkl
+	rm -f $(EXP)/**/$(DATA)/{train,test}.feat*_class*.pkl
 	
 .PHONY: results 	
 

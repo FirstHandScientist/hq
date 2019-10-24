@@ -1,10 +1,21 @@
 import os
 from glob import glob
 import numpy as np
-from tbox.utils import pkload
+#from tbox.utils import pkload
 from parse import parse
 import argparse
-from pre_infectious_detection.src.target_utils import to_onehot
+from hq.src.target_utils import to_onehot
+import pickle
+
+
+def pkload(fname="a.out"):
+    out = pickle.load(open(fname, "rb"))
+    return out
+
+
+def pkdump(*args, fname="a.out"):
+    pickle.dump(args, open(fname, "wb"))
+    return 0
 
 
 def test_get_algoname():
@@ -22,6 +33,7 @@ def test_getclass():
 def getclass(fname):
     return parse("{}_class{:d}.pkl", fname)[1]
 
+
 def gather_data(type, feat_mode, folder_):
     inclassfiles = fetch_class_files(os.path.join(folder_, "{}.feat{}_class*.pkl".format(type, feat_mode)))
     gidsclassfiles = fetch_class_files(os.path.join(folder_, "{}.feat{}.gids_class*.pkl".format(type, feat_mode)))
@@ -34,6 +46,7 @@ def gather_data(type, feat_mode, folder_):
     gids = np.concatenate(gids_list)
     Y = to_onehot(Y)
     return X, Y, gids
+
 
 def fetch_class_files(pattern):
     get_sort_key = lambda x: parse("{}_class{:d}.pkl", x)[1]
@@ -49,7 +62,6 @@ def gather_data_gen(type, feat_mode, folder_):
     gids_list = list(map(lambda x: np.array(pkload(x)[0]), gidsclassfiles))
     y_list = [[class_[i] for _ in range(x_list[i].shape[0])] for i, fname in enumerate(inclassfiles)]
     gids = gids_list
-    #Y = to_onehot(Y)
     return x_list, y_list, gids
 
 
