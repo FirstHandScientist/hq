@@ -27,3 +27,28 @@ From `hq/`, run:
 ```bash
 $ make model=gmmhmm splits=_c61f39clean feats=0
 ```
+
+# Advanced test
+Once the previous test runs and gives results, we can try more advanced calls:
+```bash
+$ ./gmmhmm_submodels
+$ ./gmmhmm_submodels.sh print
+Models:  gmmhmm
+Number of states (ns):  3 6 9
+Number of iterations (niter):  2 10 20
+Number of mixtures (nmix):  2 4 6 8 10 12
+gmmhmm-ns\{3,6,9\}-niter\{2,10,20\}-nmix\{2,4,6,8,10,12\}
+```
+Copy the last line and use it in the make call
+````bash
+$ make gmmhmm-ns\{3,6,9\}-niter\{2,10,20\}-nmix\{2,4,6,8,10,12\} splits=_c61f39clean feats=0 -j 5
+```
+This allows to train all combinations of hyper parameters for gmmhmms on the data called c61f39clean.
+Once you have set up more split\_ folders, you can run things like:
+````bash
+$ make gmmhmm-ns\{3,6,9\}-niter\{2,10,20\}-nmix\{2,4,6,8,10,12\} splits=_c61f\{39,13\}clean feats=0 -j 5
+```
+
+
+
+
