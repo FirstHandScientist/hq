@@ -17,3 +17,13 @@ $ echo `realpath ../../../../../` > pyenv/lib/python[3.6]/site-packages
 The last line adds the folder containing `hq/` and `gm_hmm/` to PYTHONPATH.
 
 
+# Data
+Place the train and test pickle files corresponding to 61 classes and 39 features and clean test with the names: `train.feat0.pkl` and `test.feat0.pkl` under `exp/split\_c61f39clean/data`.
+Follow the same naming notations for the rest of the possible datasets.
+- feat0 is not used here but might be necessary if we were to compute different sets of features.
+
+# Test
+From `hq/`, run:
+```bash
+$ make model=gmmhmm splits=_c61f39clean feats=0
+```
