@@ -1,9 +1,9 @@
-from tbox.utils import githash
 import sklearn
 from parse import parse
 import numpy as np
 from functools import partial
-from pre_infectious_detection.src.target_utils import to_onehot
+from hq.src.target_utils import to_onehot
+from hq.src.utils import githash
 
 eval_metrics = {"MSE": lambda y_true, y_hat: sklearn.metrics.mean_squared_error(y_true, y_hat),
                 "Acc": lambda y_true, y_hat: sklearn.metrics.accuracy_score(y_true, cont_to_binary(y_hat)),
