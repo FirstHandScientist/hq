@@ -1,0 +1,19 @@
+$(flags)/train-%.dgenhmm: $(flags)/train-%.class $(flags)/test-%.class
+	$(eval nfeat=$(shell echo $* | sed -e 's/^.*-//g'))
+	$(eval split_num=$(shell echo $* | sed -e 's/-.*$$//g'))
+	$(eval exp_dir=$(abspath ./exp/$(split_num)))
+	$(eval pfile=$(abspath configs/dgenhmm.json))
+	$(eval model_dir=$(shell basename $(pfile) | sed 's/.json//g'))
+	make -C $(gm_hmm) nepochs=1 dataname_trunk=$(nfeat) model=dgen model_dir=dgen.$(model_dir) EXP=$(exp_dir) paramfile=$(pfile) train
+	ln -s -f  dgen.$(model_dir).$(nfeat)/epoch1.mdl $(exp_dir)/$(MODELS)/$(model_dir).$(nfeat).mdl
+	touch $@
+
+$(flags)/test-%.dgenhmm: $(flags)/test-%.class $(flags)/train-%.dgenhmm
+	$(PYTHON) $(BIN)/run_dgenhmm.py -opt test-$* -data $(DATA) -exp $(EXP) -log $(LOG) -mdl $(MODELS)
+	touch $@
+
+$(flags)/lc-%.genhmm: $(flags)/test-%.class $(flags)/train-%.class $(flags)/train-%.genhmm
+	$(PYTHON) $(BIN)/run_genhmm.py -opt lc-$* -data $(DATA) -exp $(EXP) -log $(LOG) -mdl $(MODELS)
+	touch $@
+
+

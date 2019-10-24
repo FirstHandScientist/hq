@@ -1,0 +1,20 @@
+$(flags)/train-%.gmmhmm: $(flags)/train-%.class $(flags)/test-%.class
+	$(eval nfeat=$(shell echo $* | sed -e 's/^.*-//g'))
+	$(eval split_num=$(shell echo $* | sed -e 's/-.*$$//g'))
+	$(eval exp_dir=$(abspath ./exp/$(split_num)))
+	$(eval pfile=$(abspath configs/gmmhmm.json))
+	$(eval model_dir=$(shell basename $(pfile) | sed 's/.json//g'))
+	make -C $(gm_hmm) dataname_trunk=$(nfeat) model=gaus EXP=$(exp_dir) model_dir=gaus.$(model_dir) paramfile=$(pfile) nepochs=1 train
+	touch $@
+	ln -s -f gaus.$(model_dir).$(nfeat)/epoch1.mdl $(exp_dir)/$(MODELS)/gmmhmm.$(nfeat).mdl
+	#$(PYTHON) $(BIN)/run_gmmhmm.py -opt train-$* -data $(DATA) -exp $(EXP) -log $(LOG) -mdl $(MODELS)
+
+$(flags)/test-%.gmmhmm: $(flags)/test-%.class $(flags)/train-%.gmmhmm
+	OPENBLAS_NUM_THREADS=10 $(PYTHON) $(BIN)/run_gmmhmm.py -opt test-$* -data $(DATA) -exp $(EXP) -log $(LOG) -mdl $(MODELS)
+	touch $@
+
+$(flags)/lc-%.gmmhmm: $(flags)/test-%.class $(flags)/train-%.class $(flags)/train-%.gmmhmm
+	$(PYTHON) $(BIN)/run_gmmhmm.py -opt lc-$* -data $(DATA) -exp $(EXP) -log $(LOG) -mdl $(MODELS)
+	touch $@
+
+
