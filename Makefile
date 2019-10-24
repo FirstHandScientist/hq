@@ -33,7 +33,6 @@ MAKEFILES=makefiles
 flags=.flags
 
 inits=$(shell echo init-$(splits))
-prepares=$(shell echo $(flags)/prepare_class-{train,test}-$(splits))
 targets=$(shell echo $(flags)/{train,test}-split$(splits)-feat$(feats).$(model))
 
 all: run
@@ -78,7 +77,8 @@ include $(MAKEFILES)/Makefile_genhmm*
 include $(MAKEFILES)/Makefile_dgenhmm*
 
 
-$(flags)/%.class: $(flags)/%.feats
+# $(flags)/%.class:  $(flags)/%.feats
+$(flags)/%.class:
 	$(PYTHON) $(BIN)/prepare_class.py -opt $* -exp $(EXP) -data $(DATA)
 	touch $@
 
