@@ -1,2 +1,6 @@
 pyenv/
 src/gm_hmm
+__pycache__
+.idea
+envpy
+exp/
