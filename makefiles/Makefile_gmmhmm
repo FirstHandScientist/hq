@@ -4,10 +4,11 @@ $(flags)/train-%.gmmhmm: $(flags)/train-%.class
 	$(eval exp_dir=$(abspath ./exp/$(split_num)))
 	$(eval pfile=$(abspath configs/gmmhmm.json))
 	$(eval model_dir=$(shell basename $(pfile) | sed 's/.json//g'))
-	make -C $(gm_hmm) dataname_trunk=$(nfeat) model=gaus EXP=$(exp_dir) model_dir=gaus.$(model_dir) paramfile=$(pfile) nepochs=1 train
-	if [ -f $(exp_dir)/$(MODELS)/gaus.$(model_dir).$(nfeat)/epoch1.mdl ]; then \
+	$(eval nepochs=1)
+	make -C $(gm_hmm) dataname_trunk=$(nfeat) model=gaus EXP=$(exp_dir) model_dir=gaus.$(model_dir) paramfile=$(pfile) nepochs=$(nepochs) nclasses=3 train
+	if [[ -f $(exp_dir)/$(MODELS)/gaus.$(model_dir).$(nfeat)/epoch$(nepochs).mdl ]]; then \
 		touch $@; \
-		ln -s -f gaus.$(model_dir).$(nfeat)/epoch1.mdl $(exp_dir)/$(MODELS)/gmmhmm.$(nfeat).mdl \;
+		ln -s -f gaus.$(model_dir).$(nfeat)/epoch$(nepochs).mdl $(exp_dir)/$(MODELS)/gmmhmm.$(nfeat).mdl;\
 	fi;
 
 $(flags)/test-%.gmmhmm: $(flags)/train-%.class $(flags)/train-%.gmmhmm
