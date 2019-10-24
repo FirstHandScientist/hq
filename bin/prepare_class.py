@@ -97,7 +97,6 @@ if __name__ == "__main__":
                                  "{}".format(data_folder),
                                  "{}.feat{}.pkl".format(datatype, feat_mode))
 
-    "Example: python bin/prepare_data.py 2/61 data/train13.pkl data/test13.pkl"
 
     totclasses, featnum, noisetype = parse("_c{:d}f{:d}{}", splitname)
     nclasses = totclasses
