@@ -137,7 +137,7 @@ if __name__ == "__main__":
                                                 verbose=False)
 
     #  Normalization
-    # xtrain, xtest = normalize(xtrain, xtest)
+    xtrain, xtest = normalize(xtrain, xtest)
 
     classmap = {**classmap, **class2phn}
 
