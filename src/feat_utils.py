@@ -72,7 +72,8 @@ def to_phoneme_level(DATA):
         seq_train[i], targets_train[i] = find_change_loc(x[:, 0])
 
         # Delete label from data
-        x[:, 0] = 0
+        x = np.delete(x, 0, axis=1)
+        #  x[:, 0] = 0
 
         # For each phoneme found in the sentence, get the sequence of MFCCs and the label
         for j in range(seq_train[i].shape[0]):
