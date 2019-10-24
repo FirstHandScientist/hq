@@ -137,7 +137,7 @@ if __name__ == "__main__":
                                                 verbose=False)
 
     #  Normalization
-    xtrain, xtest = normalize(xtrain, xtest)
+    # xtrain, xtest = normalize(xtrain, xtest)
 
     classmap = {**classmap, **class2phn}
 
@@ -147,8 +147,8 @@ if __name__ == "__main__":
 
     #  Create only the classes that are left
     for i, ic in class2int.items():
-        assert(not os.path.isfile(train_outfiles[i]))
-        assert(not os.path.isfile(test_outfiles[i]))
+        # assert(not os.path.isfile(train_outfiles[i]))
+        # assert(not os.path.isfile(test_outfiles[i]))
         xtrain_c = xtrain[ytrain == ic]
         xtest_c = xtest[ytest == ic]
         
