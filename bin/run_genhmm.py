@@ -27,7 +27,7 @@ if __name__ == "__main__":
     out_mdl = os.path.join(split_folder, mdl_folder, "{}.feat{}.mdl".format(this_algo,feat_mode))
     out_results = os.path.join(split_folder, log_folder, "{}.feat{}.report".format(this_algo, feat_mode))
 
-    x_list, y_list, gids = gather_data_gen(datatype, feat_mode,  os.path.join(split_folder, data_folder))
+    x_list, y_list = gather_data_gen(datatype, feat_mode,  os.path.join(split_folder, data_folder))
 
     if compute_type == "test":
         mdl = load_model(out_mdl)
