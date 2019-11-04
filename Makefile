@@ -26,7 +26,7 @@ ifndef model
 endif
 
 ifndef feats
-	feats={1,2}
+	feats=0
 endif
 
 MAKEFILES=makefiles
