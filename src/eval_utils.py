@@ -1,24 +1,29 @@
-import sklearn
+from sklearn.metrics import mean_squared_error, accuracy_score,\
+                            roc_auc_score, precision_score,\
+                            recall_score, average_precision_score
 from parse import parse
 import numpy as np
 from functools import partial
 from hq.src.target_utils import to_onehot
 from hq.src.utils import githash
 
-eval_metrics = {"MSE": lambda y_true, y_hat: sklearn.metrics.mean_squared_error(y_true, y_hat),
-                "Acc": lambda y_true, y_hat: sklearn.metrics.accuracy_score(y_true, cont_to_binary(y_hat)),
-                "AUROC": lambda y_true, y_hat: sklearn.metrics.roc_auc_score(y_true, y_hat),
-                "p": lambda y_true, y_hat: partial(sklearn.metrics.precision_score, average="macro")(y_true, cont_to_binary(y_hat)),
-                "r": lambda y_true, y_hat: partial(sklearn.metrics.recall_score, average="macro")(y_true, cont_to_binary(y_hat)),
-                "avgPr": lambda y_true, y_hat: partial(sklearn.metrics.average_precision_score, average="macro")(y_true, y_hat)
+eval_metrics = {"MSE": lambda y_true, y_hat: mean_squared_error(y_true, y_hat),
+                "Acc": lambda y_true, y_hat: accuracy_score(y_true, cont_to_binary(y_hat)),
+                "AUROC": lambda y_true, y_hat: roc_auc_score(y_true, y_hat),
+                "p": lambda y_true, y_hat: partial(precision_score, average="macro")(y_true, cont_to_binary(y_hat)),
+                "r": lambda y_true, y_hat: partial(recall_score, average="macro")(y_true, cont_to_binary(y_hat)),
+                "avgPr": lambda y_true, y_hat: partial(average_precision_score, average="macro")(y_true, y_hat)
                 }
+
 
 def cont_to_binary(y):
     return to_onehot(np.argmax(y, axis=1))
 
+
 def test_cont_to_binary():
-    y = np.array([[-1, -2],[-1000, -999], [0.3, 0.7]])
-    assert ((cont_to_binary(y) == np.array([[1,0],[0,1],[0,1]])).all())
+    y = np.array([[-1, -2], [-1000, -999], [0.3, 0.7]])
+    assert ((cont_to_binary(y) == np.array([[1, 0], [0, 1], [0, 1]])).all())
+
 
 def test_format_score():
     assert(format_score("abc", 1.23456789) == "abc:1.23457")
