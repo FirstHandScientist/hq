@@ -4,7 +4,7 @@ $(flags)/train-%.genhmm: $(flags)/train-%.class $(flags)/test-%.class
 	$(eval exp_dir=$(abspath ./exp/$(split_num)))
 	$(eval pfile=$(abspath configs/genhmm.json))
 	$(eval model_dir=$(shell basename $(pfile) | sed 's/.json//g'))
-	make -C $(gm_hmm) nepochs=1 dataname_trunk=$(nfeat) model=gen model_dir=gen.$(model_dir) EXP=$(exp_dir) paramfile=$(pfile) train
+	make -C $(gm_hmm) nepochs=1 dataname_trunk=$(nfeat) model=gen model_dir=gen.$(model_dir) EXP=$(exp_dir) paramfile=$(pfile) nclasses=61 j=5 train
 	ln -s -f  gen.$(model_dir).$(nfeat)/epoch1.mdl $(exp_dir)/$(MODELS)/$(model_dir).$(nfeat).mdl
 	touch $@
 
