@@ -1,6 +1,6 @@
 {
     "Mul_gpu": true,
-    "use_gpu": true,
+    "use_gpu": false,
     "Train":
     {
 	"fine_tune": true,
