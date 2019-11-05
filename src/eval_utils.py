@@ -8,16 +8,16 @@ from hq.src.target_utils import to_onehot
 from hq.src.utils import githash
 
 eval_metrics = {"MSE": lambda y_true, y_hat: mean_squared_error(y_true, y_hat),
-                "Acc": lambda y_true, y_hat: accuracy_score(y_true, cont_to_binary(y_hat)),
+                "Acc": lambda y_true, y_hat: accuracy_score(y_true, cont_to_binary(y_hat,n=y_true.shape[1])),
                 "AUROC": lambda y_true, y_hat: roc_auc_score(y_true, y_hat),
-                "p": lambda y_true, y_hat: partial(precision_score, average="macro")(y_true, cont_to_binary(y_hat)),
-                "r": lambda y_true, y_hat: partial(recall_score, average="macro")(y_true, cont_to_binary(y_hat)),
+                "p": lambda y_true, y_hat: partial(precision_score, average="macro")(y_true, cont_to_binary(y_hat,n=y_true.shape[1])),
+                "r": lambda y_true, y_hat: partial(recall_score, average="macro")(y_true, cont_to_binary(y_hat,n=y_true.shape[1])),
                 "avgPr": lambda y_true, y_hat: partial(average_precision_score, average="macro")(y_true, y_hat)
                 }
 
 
-def cont_to_binary(y):
-    return to_onehot(np.argmax(y, axis=1))
+def cont_to_binary(y,n=None):
+    return to_onehot(np.argmax(y, axis=1),n=n)
 
 
 def test_cont_to_binary():
