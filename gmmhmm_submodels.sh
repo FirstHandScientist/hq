@@ -2,9 +2,9 @@ MAKEFILES=makefiles
 CONFIGS=configs
 #models="dgen genhmm gmmhmm"
 models_in=" gmmhmm"
-ns_in="3 6 9"
+ns_in="3 6"
 niter_in="2 10 20"
-nmix="2 4 6 8 10 12"
+nmix="2 4"
 if [ "$1" == "print" ]
 then
     echo "Models: " $models_in

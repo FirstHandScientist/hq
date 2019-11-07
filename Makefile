@@ -6,7 +6,7 @@ EXP=exp
 MODELS=models
 DATA=data
 sLOG=log
-gm_hmm=$(realpath src/gm_hmm)
+gm_hmm=$(realpath ../gm_hmm)
 LOG=log
 
 ifndef
@@ -40,6 +40,8 @@ all: run
 test:
 	echo $(splits)
 	echo $(nsplits)
+	echo $(targets)
+	echo $(gm_hmm)
 
 help:
 	@echo "Process pipeline for deep-news project."
