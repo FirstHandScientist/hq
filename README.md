@@ -11,8 +11,7 @@ Run:
 $ cd [FOLDER]
 $ virtualenv -p python3 pyenv
 $ . pyenv/bin/activate
-$ pip install -r requirements.txt
-$ echo `realpath ../../../../../` > pyenv/lib/python[3.6]/site-packages
+$ python [FOLDER]/setup.py develop
 ```
 The last line adds the folder containing `hq/` and `gm_hmm/` to PYTHONPATH.
 
@@ -52,5 +51,7 @@ $ make gmmhmm-ns\{3,6,9\}-niter\{2,10,20\}-nmix\{2,4,6,8,10,12\} splits=_c61f\{3
 ```
 
 
+# Acknowledge
+This repos is forked from [hq](https://gitlab.com/antoinehonore/hq/tree/master)
 
 
