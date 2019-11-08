@@ -68,9 +68,9 @@ init-%:
 
 
 post_proc_results: $(targets)
-	$(PYTHON) $(BIN)/acc_group.py -lines `echo $(EXP)/split$(splits)/log/*$(model)*feat$(feats).report` -log $(LOG) -exp $(EXP)
-	#$(PYTHON) $(BIN)/lc_group.py -lines `echo $(EXP)/split$(splits)/log/*$(model)*feat$(feats).lc` -log $(LOG) -exp $(EXP)
-	cat exp/log/$(model).feat*.Acc 
+	# $(PYTHON) $(BIN)/acc_group.py -lines `echo $(EXP)/split$(splits)/log/*$(model)*feat$(feats).report` -log $(LOG) -exp $(EXP)
+	# #$(PYTHON) $(BIN)/lc_group.py -lines `echo $(EXP)/split$(splits)/log/*$(model)*feat$(feats).lc` -log $(LOG) -exp $(EXP)
+	# cat exp/log/$(model).feat*.Acc 
 	
 
 # Makefile of all available algorithms
