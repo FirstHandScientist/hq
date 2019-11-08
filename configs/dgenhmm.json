@@ -4,8 +4,8 @@
     "Train":
     {
 	"fine_tune": true,
-	"niter": 2,
-        "tune_niter": 5,
+	"niter": 10,
+        "tune_niter": 2,
         "batch_size": 512,
         "eval_batch_size": 512,
         "tune_batch_size": 128,
